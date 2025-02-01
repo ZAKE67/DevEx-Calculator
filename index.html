@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertisseur Robux → Euros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #F7F8FB 0%, #F0F2F8 100%);
+            color: #0F0F0F;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            width: 100%;
+            max-width: 680px;
+            border-radius: 40px;
+            padding: 60px 40px;
+            box-shadow: 
+                0 20px 50px rgba(134, 126, 251, 0.1),
+                0 10px 20px rgba(134, 126, 251, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .background-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .shape {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(134, 126, 251, 0.1), rgba(217, 129, 252, 0.1));
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            right: -100px;
+            background: linear-gradient(135deg, rgba(20, 121, 252, 0.1), rgba(124, 125, 252, 0.1));
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #1479FC, #7C7DFC);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            display: inline-block;
+            background: linear-gradient(90deg, #867EFB, #D981FC);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(134, 126, 251, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .input-group {
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-top: 16px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #867EFB;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 24px 32px 24px 60px;
+            background: rgba(247, 248, 251, 0.8);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            color: #0F0F0F;
+            font-size: 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #867EFB;
+            box-shadow: 
+                0 0 0 4px rgba(134, 126, 251, 0.1),
+                0 10px 20px rgba(134, 126, 251, 0.1);
+            background: white;
+        }
+
+        input::placeholder {
+            color: #A0A0A0;
+            font-weight: 400;
+        }
+
+        .result-container {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-image: 
+                linear-gradient(white, white), 
+                linear-gradient(135deg, #867EFB, #D981FC);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            box-shadow: 
+                0 10px 30px rgba(134, 126, 251, 0.1),
+                inset 0 0 30px rgba(134, 126, 251, 0.05);
+            z-index: 1;
+        }
+
+        .result-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(134, 126, 251, 0.05), 
+                rgba(217, 129, 252, 0.05));
+            z-index: 1;
+        }
+
+        .result-container::after {
+            content: '€';
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 28px;
+            color: #867EFB;
+            font-weight: 600;
+            opacity: 0.5;
+        }
+
+        .result {
+            font-size: 48px;
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: transparent;
+            background: linear-gradient(135deg, #867EFB, #D981FC);
+            -webkit-background-clip: text;
+            background-clip: text;
+            position: relative;
+            z-index: 2;
+            letter-spacing: -0.02em;
+        }
+
+        .result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Animations et effets */
+        .container {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 25px 60px rgba(134, 126, 251, 0.15),
+                0 15px 30px rgba(134, 126, 251, 0.1);
+        }
+
+        .result-container {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .result-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 15px 40px rgba(134, 126, 251, 0.15),
+                inset 0 0 30px rgba(134, 126, 251, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 24px;
+                border-radius: 30px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+
+            input {
+                font-size: 20px;
+                padding: 20px 24px 20px 50px;
+            }
+
+            .result {
+                font-size: 36px;
+            }
+
+            .result-container {
+                padding: 32px 24px;
+            }
+
+            .result-container::after {
+                right: 24px;
+                font-size: 24px;
+            }
+        }
+
+        /* Animation de flottement pour les formes */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .shape-1 {
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            animation: float 6s ease-in-out infinite reverse;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="background-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+        </div>
+
+        <h1>Convertisseur Robux</h1>
+        <span class="subtitle">Conversion instantanée en Euros</span>
+
+        <div class="input-group">
+            <div class="input-wrapper">
+                <span class="input-icon">R$</span>
+                <input 
+                    type="number" 
+                    id="unitInput" 
+                    placeholder="Entrez le montant"
+                    oninput="convertToEuros()"
+                    autocomplete="off">
+            </div>
+        </div>
+
+        <div class="result-container">
+            <div class="result" id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function convertToEuros() {
+            const unitInput = document.getElementById('unitInput');
+            const resultElement = document.getElementById('result');
+            const value = unitInput.value;
+            
+            if (value) {
+                const euros = (value * 3.32) / 1000;
+                const formattedEuros = euros.toLocaleString('fr-FR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                resultElement.textContent = formattedEuros;
+                resultElement.classList.add('show');
+            } else {
+                resultElement.textContent = '';
+                resultElement.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+</html>
